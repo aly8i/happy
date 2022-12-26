@@ -41,11 +41,7 @@
     "recharts": "^2.1.16",
     "sass": "^1.55.0",
     "swiper": "^8.4.4"
-  },
-  "engines" : { 
-    "node" : "16.13.0"
-  },
-  
+  },  
   
   "devDependencies": {
     "eslint": "8.26.0",
