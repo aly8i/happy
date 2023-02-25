@@ -6,7 +6,7 @@ const ProductList = dynamic(
 )
 const page = ({products,token}) => {
   return (
-        <ProductList products={products} token={token}/>
+      <ProductList products={products} token={token}/>
     );
 };
 

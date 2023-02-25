@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { InputLabel } from "@mui/material";
 import Alert from '@mui/material/Alert';
-
 const NewProduct = ({token}) => {
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState("");
@@ -22,6 +21,8 @@ const NewProduct = ({token}) => {
     const [extraOptions, setExtraOptions] = useState([]);
     const [extra, setExtra] = useState(null);
     const [progress,setProgress]= useState(0);
+    const [measurment,setMeasurment]= useState("unit");
+    const [priceperkg,setPriceperkg] = useState(null);
     const[loading,setLoading] = useState(false);
     const [category,setCategory]= useState("");
     const router = useRouter();
@@ -49,44 +50,49 @@ const NewProduct = ({token}) => {
       const res11 = await server.post("api/products", pay);
       res1=res11;
   }catch(err){
-    if(err.response.status>=300){
-      router.push("/");
-    }
+    router.push("/");
   }
     return res1;
   }
   const validate = () =>{
     if(file==null){
-      setError("Please add a product Image.")
+      setError("Please add a product Image.");
       return false;
     }else if(title==""){
-      setError("Please add a title.")
+      setError("Please add a title.");
       return false;
     }else if(desc==""){
-      setError("Please add a description.")
-      return false;
-    }else if(prices.length==0){
-      setError("Please add prices.")
-      return false;
-    }else if(category==""){
-      setError("Please add a category.")
+      setError("Please add a description.");
       return false;
     }else{
-      var currentPrices = prices;
-      for(var i=0;i<=2;i++){
-        if(currentPrices[i]==undefined||currentPrices[i]==null||currentPrices[i]==''||currentPrices[i]==0)
-          currentPrices[i] = null;
+      if(measurment=="unit"){
+        setPriceperkg(null);
+        if(prices.length==0){
+          setError("Please add prices.");
+          return false;
+        }
+        var currentPrices = prices;
+        for(var i=0;i<=2;i++){
+          if(currentPrices[i]==undefined||currentPrices[i]==null||currentPrices[i]==''||currentPrices[i]==0)
+            currentPrices[i] = null;
+        }
+        setPrices(currentPrices);
+      }else{
+        setPrices([]);
+        if(priceperkg==""||priceperkg==0||priceperkg==null){     
+          setError("Please add a price per kg.");
+          return false;
+        }
       }
-      setPrices(currentPrices);
-      return true;
-    }
+    return true;
   }
+}
   const handleSave = async()=>{
     const validated = validate();
     if(!validated) return;
     setLoading(true);
     const img = await uploadFiles(file);
-    const payload = {title,desc,prices,extraOptions,category,img};
+    const payload = {title,desc,prices,extraOptions,category,img,priceperkg,measurment};
     try{
       postProduct(payload);
       setLoading(false);
@@ -168,15 +174,16 @@ const NewProduct = ({token}) => {
               />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-multiline-static"
-                label="Description"
-                multiline
-                color="error"
-                rows={4}
-                onChange={(e) => setDesc(e.target.value)}
-              />
+                <TextField
+                  id="outlined-multiline-static"
+                  label="Description"
+                  multiline
+                  color="error"
+                  rows={4}
+                  onChange={(e) => setDesc(e.target.value)}
+                />
               </div>
+             
               <div className={styles.sFormInput}>
               <FormControl color="error" sx={{ minWidth: 210 }}>
                   <InputLabel >Category</InputLabel>
@@ -192,8 +199,8 @@ const NewProduct = ({token}) => {
                       <MenuItem color="error" value={'burger'}>burger</MenuItem>
                       <MenuItem color="error" value={'dish'}>dish</MenuItem>
                       <MenuItem color="error" value={'meal'}>meal</MenuItem>
-                      <MenuItem  color="error" value={'drink'}>drink</MenuItem>
-                    </Select>
+                      <MenuItem color="error" value={'drink'}>drink</MenuItem>
+                  </Select>
               </FormControl>
               <div className={styles.priceInput}>
                 <div className={styles.smallFormInput}>
@@ -203,6 +210,7 @@ const NewProduct = ({token}) => {
                     color="error"
                     onChange={(e) => changePrice(e, 0)}
                     type='number'
+                    disabled={measurment=='kg'?true:false}
                   />
                   </div>
                 <div className={styles.smallFormInput}>
@@ -212,6 +220,7 @@ const NewProduct = ({token}) => {
                     color="error"
                     type='number'
                     onChange={(e) => changePrice(e, 1)}
+                    disabled={measurment=='kg'?true:false}
                   />
                 </div>
                 <div className={styles.smallFormInput}>
@@ -221,6 +230,7 @@ const NewProduct = ({token}) => {
                     color="error"
                     type='number'
                     onChange={(e) => changePrice(e, 2)}
+                    disabled={measurment=='kg'?true:false}
                   />
                 </div>
                 </div>
@@ -256,6 +266,34 @@ const NewProduct = ({token}) => {
                     </span>
                   ))}
                 </div>
+              </div>
+              <div className={styles.sFormInput}>
+              <FormControl color="error" sx={{ minWidth: 210 }}>
+                  <InputLabel >Measurment</InputLabel>
+                    <Select
+                      id="outlined-name"
+                      value={measurment}
+                      label="Measurment"
+                      onChange={(e) => setMeasurment(e.target.value)}
+                      renderValue={(value) => `${value}`}
+                      color="error"
+                    >
+                      <MenuItem color="error" value={'unit'}>unit</MenuItem>
+                      <MenuItem color="error" value={'kg'}>kg</MenuItem>
+                  </Select>
+              </FormControl>
+              </div>
+              <div className={styles.sFormInput}>
+                <TextField
+                  id="outlined-name"
+                  label="Price per Kg"
+                  name="price"
+                  color="error"
+                  type="number"
+                  disabled={measurment=='kg'?false:true}
+                  value={priceperkg}
+                  onChange={(e)=>setPriceperkg(e.target.value)}
+                />
               </div>
               {loading?(<Progress className={styles.progress}/>):<button onClick={handleSave}>Save</button>}
             </div>

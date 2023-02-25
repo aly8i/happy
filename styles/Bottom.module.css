@@ -5,6 +5,8 @@
 }
 .copyright{
     background-color: rgba(0, 0, 0, 0.025);
+    display: flex;
+    flex-direction: column;
 
 }
 .white{
@@ -24,6 +26,17 @@
 }
 .twitter{
     color:rgb(0, 183, 255);
+}
+.logo{
+    cursor: pointer;
+    /* -webkit-filter: grayscale(100%); Safari 6.0 - 9.0 */
+    /* filter: grayscale(100%); */
+    transition: cubic-bezier(.34,-0.02,.43,.97) 0.3s;
+}
+.logo:hover{
+    -webkit-filter: none; /* Safari 6.0 - 9.0 */
+    filter: none;
+    scale: 1.2;
 }
 .twitter:hover{
     color:blue;

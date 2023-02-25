@@ -6,9 +6,8 @@ import * as Scroll from 'react-scroll';
 import { useEffect } from 'react';
 function PizzaWrapper({pizzaList}) {
   const filter = useSelector((state) => state.filter);
-
   useEffect(()=>{
-    if(filter.query!=""){
+    if(filter.query!=""||filter.title!=""){
       let scroller = Scroll.scroller;
       scroller.scrollTo('pizzawrapper', {
         duration: 500,
@@ -17,11 +16,11 @@ function PizzaWrapper({pizzaList}) {
         offset: -100,
       })
     }
-},[])
+},[filter])
 
   return (
       <div className={styles.wrapper} id="pizzawrapper">
-          {pizzaList?.filter(pizza => pizza?.category?.includes(filter.query)).map((pizza,id) => (
+          {pizzaList?.filter(pizza => pizza?.category?.includes(filter.query)&&(pizza?.title?.toLowerCase().includes(filter.title.toLowerCase())||filter?.title?.toLowerCase().includes(pizza.title.toLowerCase()))).map((pizza,id) => (
             <PizzaCard key={pizza._id} pizza={pizza} id={id} />
           ))}
       </div>

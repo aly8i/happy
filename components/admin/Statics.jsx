@@ -10,24 +10,62 @@ import {getDownloadURL, ref, uploadBytesResumable} from "@firebase/storage";
 import Progress from "../Progress";
 import CancelIcon from '@mui/icons-material/Cancel';
 import { motion } from "framer-motion";
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import Map from "../Map";
+import Alert from '@mui/material/Alert';
 const Statics = ({data,token}) => {
     const [files1, setFiles1] = useState([]);
     const [files2, setFiles2] = useState([]);
-    const [name, setName] = useState(data.name);
-    const [description, setDescription] = useState(data.description);
-    const [slider1, setSlider1] = useState(data.slider1);
-    const [slider2, setSlider2] = useState(data.slider2);
-    const [location,setLocation]= useState(data.location);
-    const [phonenumber1,setPhonenumber1] = useState(data.phonenumber1);
-    const [phonenumber2,setPhonenumber2] = useState(data.phonenumber2);
-    const [facebook,setFacebook]= useState(data.facebook);
-    const [whatsapp,setWhatsapp]= useState(data.whatsapp);
-    const [linkedin,setLinkedin]= useState(data.linkedin);
-    const [twitter,setTwitter]= useState(data.twitter);
-    const [gmail,setGmail]= useState(data.gmail);
-    const [instagram,setInstagram]= useState(data.instagram);
-    const [github,setGithub]= useState(data.github);
+    const [name, setName] = useState(data?.name||"");
+    const [description, setDescription] = useState(data?.description||"");
+    const [slider1, setSlider1] = useState(data?.slider1||[]);
+    const [slider2, setSlider2] = useState(data?.slider2||[]);
+    const [location,setLocation]= useState(data?.location||"");
+    const [phonenumber1,setPhonenumber1] = useState(data?.phonenumber1||"");
+    const [phonenumber2,setPhonenumber2] = useState(data?.phonenumber2||"");
+    const [facebook,setFacebook]= useState(data?.facebook||"");
+    const [whatsapp,setWhatsapp]= useState(data?.whatsapp||"");
+    const [linkedin,setLinkedin]= useState(data?.linkedin||"");
+    const [twitter,setTwitter]= useState(data?.twitter||"");
+    const [gmail,setGmail]= useState(data?.gmail||"");
+    const [instagram,setInstagram]= useState(data?.instagram||"");
+    const [github,setGithub]= useState(data?.github||"");
     const[loading,setLoading] = useState(false);
+    const [showSide,setShowSide] = useState(false);
+    const [lat,setLat] = useState(data?.mapLocation?.lat||null);
+    const [lng,setLng] = useState(data?.mapLocation?.lng||null);
+    const [latt,setLatt] = useState(data?.mapLocation?.lat||null);
+    const [lngg,setLngg] = useState(data?.mapLocation?.lng||null);
+    const [openMap,setOpenMap] = useState(false);
+    const [deliveryChargePerKm,setDeliveryChargePerKm] = useState(data.deliveryChargePerKm || null);
+    const [error,setError] = useState(null);
+    const toggle = () => {
+      if(showSide==true){
+        setShowSide(false);
+      }else{
+        setShowSide(true);
+      }
+    }
+    const validate = () =>{
+      if(name==""){
+        setError("Please add a name.")
+        return false;
+      }else if(description==""){
+        setError("Please add a description.")
+        return false;
+      }else if(deliveryChargePerKm <= 0 || null){
+        setError("Please enter a valid delivery charge.")
+        return false;
+      }else if(phonenumber1==""||phonenumber2==""){
+        setError("Please add a phonenumber.")
+        return false;
+      }else if(location==""){
+        setError("Please add a location.")
+        return false;
+      }else{
+        return true;
+      }
+    }
     const router = useRouter();
     const server = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
@@ -52,13 +90,21 @@ const Statics = ({data,token}) => {
       const res11 = await server.put("api/static/", pay);
       res1=res11;
   }catch(err){
-    if(err.response.status>=300){
+    console.log(err)
       router.push("/");
-    }
   }
     return res1;
   }
+
+    const setLocationParams = () =>{
+      setLat(latt);
+      setLng(lngg);
+      setOpenMap(false);
+    }
+
     const handleSave = ()=>{
+        const validated = validate();
+        if(!validated) return;
         setLoading(true);
         var url = "";
         var cs1 = true;
@@ -68,7 +114,6 @@ const Statics = ({data,token}) => {
         const promise1 = new Promise(async(resolve, reject) => {
           if(files1.length!=0){
             files1.map(async(file, i) => {
-              
                 const promise2 = new Promise(async(resolve, reject) => {
                   url = await uploadFiles(file);
                   resolve(url);
@@ -80,7 +125,6 @@ const Statics = ({data,token}) => {
                     resolve('finished');
                   }
                 })
-              
           });
         }else{
           resolve('skipped1');
@@ -115,7 +159,7 @@ const Statics = ({data,token}) => {
               promise3.then((res)=>{
                 if(res=='finished'|| res=='skipped2'){
                   if(cs1==true&&cs2==true){
-                    const payload = {name,description,slider1:s1,slider2:s2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin};
+                    const payload = {name,description,slider1:s1,slider2:s2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin,mapLocation:{lat:parseFloat(lat),lng:parseFloat(lng)},deliveryChargePerKm};
                     try{
                       postData(payload);
                       setLoading(false);
@@ -124,16 +168,16 @@ const Statics = ({data,token}) => {
                       console.log(err);
                     }  
                   }else if(cs1==true&&cs2==false){
-                    const payload = {name,description,slider1:s1,slider2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin};
+                    const payload = {name,description,slider1:s1,slider2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin,mapLocation:{lat:parseFloat(lat),lng:parseFloat(lng)},deliveryChargePerKm};
                     try{
                       postData(payload);
                       setLoading(false);
                       router.push("/");
                     }catch(err){
                       console.log(err);
-                    }  
+                    }
                   }else if(cs1==false&&cs2==true){
-                    const payload = {name,description,slider1,slider2:s2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin};
+                    const payload = {name,description,slider1,slider2:s2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin,mapLocation:{lat:parseFloat(lat),lng:parseFloat(lng)},deliveryChargePerKm};
                     try{
                       postData(payload);
                       setLoading(false);
@@ -142,7 +186,7 @@ const Statics = ({data,token}) => {
                       console.log(err);
                     }  
                   }else{
-                    const payload = {name,description,slider1,slider2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin};
+                    const payload = {name,description,slider1,slider2,location,phonenumber1,phonenumber2,facebook,whatsapp,twitter,gmail,instagram,github,linkedin,mapLocation:{lat:parseFloat(lat),lng:parseFloat(lng)},deliveryChargePerKm};
                     try{
                       postData(payload);
                       setLoading(false);
@@ -166,12 +210,9 @@ const Statics = ({data,token}) => {
             const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) *100);
           }, (err) => console.log(err),
           () => {
-            getDownloadURL(uploadTask.snapshot.ref)
-            .then(urlz => {
-              resolve(urlz);
+              getDownloadURL(uploadTask.snapshot.ref)
+              .then(urlz => {resolve(urlz);})
             }
-            )
-          }
           );
         })
       };
@@ -192,8 +233,25 @@ const Statics = ({data,token}) => {
       };
   return (
     <div className={styles.new}>
-      <Sidebar />
+      <div className={styles.mobside} onClick={()=>{toggle()}}>
+        <WidgetsIcon className={styles.mobsideicon}/>
+      </div>
+      {showSide==true&&
+      <div className={styles.side2}>
+        <Sidebar />
+      </div>}
+      <div className={styles.side}>
+        <Sidebar />
+      </div>
       <div className={styles.newContainer}>
+        {openMap&&
+          <div className={styles.mapBox}>
+              <div className={styles.mapPop}>
+                <Map lat={latt} lng={lngg} setLat={setLatt} setLng={setLngg} />
+                <div className={styles.setButton} onClick={()=>{setLocationParams()}}>Set</div>
+              </div>
+          </div>
+        }
         <div className={styles.top}>
           <h1>Your Website Statics</h1>
         </div>
@@ -215,7 +273,7 @@ const Statics = ({data,token}) => {
                 {files1[0]?(
                   files1.map((file,i)=>(<motion.img  key={i} whileHover={{ scale: 1.2}} src={URL.createObjectURL(file)} alt=""/>))
                 ):(
-                  slider1.map((slide,i)=>(<motion.img key={i} whileHover={{ scale: 1.2}} src={slide} alt=""/>))
+                  slider1?.map((slide,i)=>(<motion.img key={i} whileHover={{ scale: 1.2}} src={slide} alt=""/>))
                 )}
               </div>
               <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.x} onClick={()=>handleClear("slider1")}>
@@ -238,10 +296,9 @@ const Statics = ({data,token}) => {
                 {files2[0]?(
                   files2.map((file,i)=>(<motion.img key={i} whileHover={{ scale: 1.2}} src={URL.createObjectURL(file)} alt=""/>))
                 ):(
-                  slider2.map((slide,i)=>(<motion.img key={i} whileHover={{ scale: 1.2}} src={slide} alt=""/>))
+                  slider2?.map((slide,i)=>(<motion.img key={i} whileHover={{ scale: 1.2}} src={slide} alt=""/>))
                 )}
               </div>
-
               <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.x} onClick={()=>handleClear("slider2")}>
                 {files2[0]?(<CancelIcon className={styles.xIcon}/>):(slider2[0]?(<CancelIcon className={styles.xIcon}/>):(<></>))}
               </motion.div>
@@ -259,78 +316,79 @@ const Statics = ({data,token}) => {
               />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-multiline-static"
-                label="Description"
-                value={description}
-                multiline
-                color="error"
-                rows={4}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+                <TextField
+                  id="outlined-multiline-static"
+                  label="Description"
+                  value={description}
+                  multiline
+                  color="error"
+                  rows={4}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.formInput}>
+                <TextField
+                  id="outlined-name"
+                  label="Phonenumber 1"
+                  value={phonenumber1}
+                  color="error"
+                  onChange={(e) => setPhonenumber1(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Location"
-                value={location}
-                color="error"
-                onChange={(e) => setLocation(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Phonenumber 2"
+                  value={phonenumber2}
+                  color="error"
+                  onChange={(e) => setPhonenumber2(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Phonenumber 1"
-                value={phonenumber1}
-                color="error"
-                onChange={(e) => setPhonenumber1(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Location"
+                  value={location}
+                  color="error"
+                  onChange={(e) => setLocation(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Phonenumber 2"
-                value={phonenumber2}
-                color="error"
-                onChange={(e) => setPhonenumber2(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Github"
+                  value={github}
+                  color="error"
+                  onChange={(e) => setGithub(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Github"
-                value={github}
-                color="error"
-                onChange={(e) => setGithub(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Facebook"
+                  value={facebook}
+                  color="error"
+                  onChange={(e) => setFacebook(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Facebook"
-                value={facebook}
-                color="error"
-                onChange={(e) => setFacebook(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Gmail"
+                  value={gmail}
+                  color="error"
+                  onChange={(e) => setGmail(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Gmail"
-                value={gmail}
-                color="error"
-                onChange={(e) => setGmail(e.target.value)}
-              />
-              </div>
-              <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Twitter"
-                value={twitter}
-                color="error"
-                onChange={(e) => setTwitter(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Twitter"
+                  value={twitter}
+                  color="error"
+                  onChange={(e) => setTwitter(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
               <TextField
@@ -351,20 +409,52 @@ const Statics = ({data,token}) => {
               />
               </div>
               <div className={styles.formInput}>
-              <TextField
-                id="outlined-name"
-                label="Whatsapp"
-                value={whatsapp}
-                color="error"
-                onChange={(e) => setWhatsapp(e.target.value)}
-              />
+                <TextField
+                  id="outlined-name"
+                  label="Whatsapp"
+                  value={whatsapp}
+                  color="error"
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                />
               </div>
               <div className={styles.formInput}>
-              <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} onClick={handleSave}>Save</motion.button>
+                <div className={styles.ll}>
+                  <TextField
+                    id="outlined-name"
+                    label="Latitude"
+                    value={lat}
+                    color="error"
+                    disabled
+                  />
+                  <TextField
+                    id="outlined-name"
+                    label="Longitude"
+                    value={lng}
+                    color="error"
+                    disabled
+                  />
+                </div>
               </div>
-              
-              {loading?(<Progress className={styles.progress}/>):null}
+              <div className={styles.formInput}>
+                <div className={styles.locationBtn} onClick={()=>{setOpenMap(true)}}>Change</div>
+              </div>
+              <div className={styles.formInput}>
+                <TextField
+                  id="outlined-name"
+                  label="Delivery Charge Per km"
+                  value={deliveryChargePerKm}
+                  color="error"
+                  type={Number}
+                  onChange={(e) => setDeliveryChargePerKm(e.target.value)}
+                />
+              </div>
+              <div className={styles.formInput}>
+                {loading?(<Progress className={styles.progress}/>):<motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} onClick={handleSave}>Save</motion.button>}
+              </div>
             </div>
+            {error&&<Alert className={styles.alert} onClose={() => {setError(null)}} severity="error">
+              {error}
+            </Alert>}
           </div>
         </div>
       </div>

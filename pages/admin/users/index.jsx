@@ -6,7 +6,7 @@ const UserList = dynamic(
 )
 const page = ({users,token}) => {
   return (
-        <UserList users={users} token={token}/>
+    <UserList users={users} token={token}/>
   );
 };
 

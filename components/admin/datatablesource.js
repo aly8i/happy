@@ -181,8 +181,8 @@ export const orderColumns = [
         <div className={styles.cellWithImg}>
           {params.row.products.map((p,i)=>(
             p.extras[0]?
-            (<><img className={styles.cellImg} src={p.product?.img} alt="avatar" />{`${p.amount} (${p.size}) ${p.product?.title} with ${p.extras[0]}`}&nbsp;&nbsp;&nbsp;</>)
-            :(<><img className={styles.cellImg} src={p.img} alt="avatar" />{`${p.amount} (${p.size}) ${p.title}`}&nbsp;&nbsp;&nbsp;</>)))}
+            (<><img className={styles.cellImg} src={p.product?.img} alt="avatar" />{`${p.amount}`}{p.product?.measurment=='kg'?" (kg)":` (${p.size})`} {`${p.product?.title} with ${p.extras[0]}`}&nbsp;&nbsp;&nbsp;</>):
+            (<><img className={styles.cellImg} src={p.product?.img} alt="avatar" />{`${p.amount}`}{p.product?.measurment=='kg'?" (kg)":` (${p.size})`} {`${p.product?.title}`}&nbsp;&nbsp;&nbsp;</>)))}
         </div>
         );
     },

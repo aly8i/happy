@@ -5,8 +5,9 @@ import Map from '../components/Map';
 import TextField from '@mui/material/TextField';
 import { motion } from "framer-motion";
 import Alert from '@mui/material/Alert';
+import axios from "axios";
 
-const OrderDetail = ({ createOrder }) => {
+const OrderDetail = ({ createOrder, mapLocation, deliveryChargePerKm }) => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state)=> state.user);
   const [name, setName] = useState(user.fullname||"");
@@ -18,17 +19,38 @@ const OrderDetail = ({ createOrder }) => {
   const [lng, setLng] = useState(35.4776);
   const [lat, setLat] = useState(33.8956);
   const [error,setError] = useState(null);
+  const [deliveryCharge,setDeliveryCharge] = useState(0);
+  const [stage,setStage] = useState(0);
   let array = [];
   const temp = 1;
-  const handleClick = () => {
+
+  const calculateDelivery = async () =>{
+    await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${mapLocation?.lat},${mapLocation?.lng};${lat},${lng}?steps=true&access_token=${process.env.NEXT_PUBLIC_MAPBOX_APIKEY}`)
+    .then((response) => {
+      const distance = response.data.routes[0].distance;
+      const price = (deliveryChargePerKm * distance / 1000).toFixed(2);
+      setDeliveryCharge(price+1);
+    })
+    .catch((error) => {
+      console.error(error); 
+    });
+  }
+  const handleClick1 = async () => {
+    await calculateDelivery();
+
     if(validate()==true){
-      const location = {
-        lat: lat,
-        lng: lng
-      }
-      createOrder({ name, total, products,location,customerID,phoneNumber,address });
+      setStage(1);
     }
   };
+  const handleClick2 = async () => {
+    const location = {
+      lat: lat,
+      lng: lng
+    }
+    createOrder({ name, total, products,location,customerID,phoneNumber,address, deliveryCharge });
+  };
+
+
   useEffect(() => {
     array=[];
     setCustomerID(user.id);
@@ -55,51 +77,59 @@ const OrderDetail = ({ createOrder }) => {
     <>
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          <h1 className={styles.title}>You will pay ${total} after delivery.</h1>
-          <div className={styles.item}>
-            <TextField
-          id="outlined-name"
-          label="Full Name"
-          error
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-          </div>
-          <div className={styles.item}>
-          <TextField
-          error
-          id="outlined-name"
-          label="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-          </div>
-          <div className={styles.item}>
-            <TextField
-            error
-            id="outlined-multiline-static"
-            label="Address"
-            value={address}
-            multiline
-            rows={4}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-          </div>
-          <div className={styles.item}>
-            <div className={styles.map}>
-              <Map lng={lng} lat={lat} setLng={setLng} setLat={setLat}/>
-            </div>
-          </div>
-          <motion.button whileTap={{ scale: 0.8}} whileHover={{ scale: 1.1}} className={styles.button} onClick={handleClick}>
-            Order
-          </motion.button>
+          {stage==0?
+            <>
+              <h1 className={styles.title}>You will pay ${total} after delivery.</h1>
+              <div className={styles.item}>
+                <TextField
+                  id="outlined-name"
+                  label="Full Name"
+                  error
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className={styles.item}>
+                <TextField
+                  error
+                  id="outlined-name"
+                  label="Phone Number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div className={styles.item}>
+                <TextField
+                  error
+                  id="outlined-multiline-static"
+                  label="Address"
+                  value={address}
+                  multiline
+                  rows={4}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+              <div className={styles.item}>
+                <div className={styles.map}>
+                  <Map lng={lng} lat={lat} setLng={setLng} setLat={setLat}/>
+                </div>
+              </div>
+              <motion.button whileTap={{ scale: 0.8}} whileHover={{ scale: 1.1}} className={styles.button} onClick={handleClick1}>
+                Proceed
+              </motion.button>
+          </>:
+          <>
+            <h1 className={styles.title}>You will pay ${total} for your cart.</h1>
+            <h1 className={styles.subtitle}>and ${deliveryCharge} for Delivery Charge.</h1>
+            <motion.button whileTap={{ scale: 0.8}} whileHover={{ scale: 1.1}} className={styles.button} onClick={handleClick2}>
+              Confirm
+            </motion.button>
+          </>}
           {error&&<Alert onClose={() => {setError(null)}} severity="error">
-        {error}
+          {error}
       </Alert>}
-        </div>
-        
+        </div>   
       </div>
-      
     </>
   );
 };

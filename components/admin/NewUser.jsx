@@ -141,9 +141,8 @@ const NewUser = () => {
                 </RadioGroup>
               </div>
               <div className={styles.formInput}>
-              {loading?(<Progress className={styles.progress}/>):null}
+              {loading?(<Progress className={styles.progress}/>):<button onClick={handleSave}>Save</button>}
               </div>
-              <button onClick={handleSave}>Save</button>
             </div>
           </div>
         </div>

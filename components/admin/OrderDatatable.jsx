@@ -65,7 +65,8 @@ const OrderDatatable = ({orders,deliverys,token}) => {
   const requestSearch = (searchedVal) => {
     if(searchedVal!=""){
       const filteredRows = rows.filter((row) => {
-        return row.name.toLowerCase().includes(searchedVal.toLowerCase());
+        console.log(row);
+        return row.name.toLowerCase().includes(searchedVal.toLowerCase())||row._id.includes(searchedVal.toLowerCase())||row.name.toLowerCase().includes(searchedVal.toLowerCase())||row.phoneNumber?.includes(searchedVal.toLowerCase());
       });
       setRows(filteredRows);
     }else{

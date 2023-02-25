@@ -19,7 +19,7 @@ const handler = async (req, res) => {
     verify(req.body.jwt,process.env.NEXT_PUBLIC_JWT_SECRET,async function(err,decoded){
       if(!err && decoded) {
         try {
-          const order = await Order.create({ name:decoded.name, total:decoded.total,products:decoded.products,location:decoded.location,customerID:decoded.customerID,phoneNumber:decoded.phoneNumber,address:decoded.address});
+          const order = await Order.create({ name:decoded.name, total:decoded.total,products:decoded.products ,location:decoded.location, customerID:decoded.customerID, phoneNumber:decoded.phoneNumber, address:decoded.address, deliveryCharge:decoded.deliveryCharge});
           res.status(201).json(order);
         } catch (err) { 
           res.status(500).json(err);

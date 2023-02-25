@@ -41,6 +41,9 @@ const OrderSchema = new mongoose.Schema(
     address:{
       type:String
     },
+    deliveryCharge:{
+      type:Number
+    },
   },
   { timestamps: true }
 );

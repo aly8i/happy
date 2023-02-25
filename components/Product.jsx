@@ -20,7 +20,11 @@ const Product = ({ product }) => {
   const [extras, setExtras] = useState([]);
   const dispatch = useDispatch();
   const router = useRouter();
-  
+  useEffect(()=>{
+    if(product.measurment=='kg'){
+      setPrice(parseFloat((product.priceperkg*quantity).toFixed(2)));
+    }
+  },[quantity])
   const changePrice = (number) => {
     setPrice(price + number);
   };
@@ -53,15 +57,24 @@ const Product = ({ product }) => {
       router.push('/socialogin');
       return;
     }
+    if(price==0) return;
     let sizee;
-    if(size==0){
+    if(product.measurment=='kg'){
+      sizee="NAN"
+    }else if(size==0){
       sizee="s";
     }else if (size==1){
       sizee="m"
     }else{
       sizee="l"
     }
-    dispatch(addProduct({...product, extras, price,size:sizee, quantity}));
+    if(product.measurment=='kg'){
+      dispatch(addProduct({...product, extras, price:product.priceperkg,size:sizee, quantity}));
+    }else{
+      dispatch(addProduct({...product, extras, price,size:sizee, quantity}));
+    }
+    
+    setQuantity(1);
   };
 
   return (
@@ -76,35 +89,45 @@ const Product = ({ product }) => {
     <Zoom bottom>
       <div className={styles.right}>
         <h1 className={styles.title}>{product.title}</h1>
-        <span className={styles.price}>${price}</span>
+        {<span className={styles.price}>${price}</span>}
         <p className={styles.desc}>{product.desc}</p>
-        <h3 className={styles.choose}>Choose the size</h3>
-        <div className={styles.sizes}>
-          {
-            product.prices[0]==null?(<></>):(
-            <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.size} onClick={() => handleSize(0)}>
-              <Image src="/img/size.png" fill alt="" />
-              <span className={styles.number}>Small</span>
-            </motion.div>
-            )
-          }
-          {
-            product.prices[1]==null?(<></>):(
-              <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.size} onClick={() => handleSize(1)}>
+        {product.measurment=='kg'?<>
+        <h3 className={styles.choose}>Set the Quantity in kg</h3>
+        <input type="number" defaultValue={1} onChange={(e)=>setQuantity(e.target.value)} className={styles.quantity}/>
+        </>
+        :<>
+          <h3 className={styles.choose}>Choose the size</h3>
+          <div className={styles.sizes}>
+            {
+              product.prices[0]==null?(<></>):(
+              <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.size} onClick={() => handleSize(0)}>
                 <Image src="/img/size.png" fill alt="" />
-                <span className={styles.number}>Medium</span>
+                <span className={styles.number}>Small</span>
               </motion.div>
-            )
-          }
-          {
-            product.prices[2]==null?(<></>):(
-              <motion.div className={styles.size} whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} onClick={() => handleSize(2)}>
-                <Image src="/img/size.png" fill alt="" />
-                <span className={styles.number}>Large</span>
-              </motion.div>
-            )
-          }  
-        </div>
+              )
+            }
+            {
+              product.prices[1]==null?(<></>):(
+                <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} className={styles.size} onClick={() => handleSize(1)}>
+                  <Image src="/img/size.png" fill alt="" />
+                  <span className={styles.number}>Medium</span>
+                </motion.div>
+              )
+            }
+            {
+              product.prices[2]==null?(<></>):(
+                <motion.div className={styles.size} whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.2}} onClick={() => handleSize(2)}>
+                  <Image src="/img/size.png" fill alt="" />
+                  <span className={styles.number}>Large</span>
+                </motion.div>
+              )
+            }  
+          </div>
+        </>
+      }
+      {
+        product.extraOptions.length>0?
+        <>
         <h3 className={styles.choose}>Choose additional ingredients</h3>
         <div className={styles.ingredients}>
           {product.extraOptions.map((option) => (
@@ -116,7 +139,13 @@ const Product = ({ product }) => {
             </div>
           ))}
         </div>
-        <div className={styles.add}>
+        </>:<></>
+      }
+      <div className={styles.add}>
+      {
+        product.measurment=='kg'?
+        <></>
+        :
           <div className={styles.quantityCon}>
             <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} onClick={()=>decrementFn()}>
               <RemoveCircleIcon className={styles.subQ}/>
@@ -128,6 +157,7 @@ const Product = ({ product }) => {
               <AddCircleIcon/> 
             </motion.div>
           </div>
+        }
           <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} className={styles.button} onClick={handleClick}>
             Add to Cart
           </motion.button>

@@ -9,24 +9,26 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GoogleIcon from '@mui/icons-material/Google';
 import {useState,useEffect} from 'react'
 import axios from "axios";
+import Image from "next/image";
+import lt from "../public/img/lt.png"
 function Bottom() {
   const [data,setData]=useState({});
   useEffect(()=>{
     try{
     axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/static/`).then((res)=>{
       setData({
-        github: res.data.github,
-        facebook:res.data.facebook,
-        whatsapp:res.data.whatsapp,
-        linkedin:res.data.linkedin,
-        twitter:res.data.twitter,
-        gmail:res.data.gmail,
-        instagram:res.data.instagram,
-        description:res.data.description,
-        name:res.data.name,
-        phonenumber1:res.data.phonenumber1,
-        phonenumber2:res.data.phonenumber2,
-        location:res.data.location
+        github: res.data?.github,
+        facebook:res.data?.facebook,
+        whatsapp:res.data?.whatsapp,
+        linkedin:res.data?.linkedin,
+        twitter:res.data?.twitter,
+        gmail:res.data?.gmail,
+        instagram:res.data?.instagram,
+        description:res.data?.description,
+        name:res.data?.name,
+        phonenumber1:res.data?.phonenumber1,
+        phonenumber2:res.data?.phonenumber2,
+        location:res.data?.location
       });
     });
     }catch(err){
@@ -123,8 +125,10 @@ function Bottom() {
     </div>
   </section>
   <div className={`${styles.copyright} text-center p-4`}>
-    © 2021 Copyright:
-    <a className="text-reset fw-bold" href="https://lebanontoken.web.app/">lebanontoken.web.app</a>
+    <p>Powered By</p>
+    <a className="text-reset fw-bold" href="https://lebanontoken.web.app/">
+      <Image className={styles.logo} src={lt} alt="Lebanon Token" width={150} height={95}/>
+    </a>
   </div>
 </footer>
     </div>

@@ -7,7 +7,7 @@ const Footer = () => {
   useEffect(()=>{
     try{
     axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/static/`).then((res)=>{
-      setData(res.data.slider2);
+      setData(res.data?.slider2);
     });
     }catch(err){
       console.log(err);
@@ -17,7 +17,7 @@ const Footer = () => {
     <div id="footer" className={styles.container}>
       <div className={styles.item}>
         <div className={styles.bgimg}>
-          {data.length>0?<BackgroundSlider images={data} duration={3} transition={2} />:<></>}
+          {data?.length>0?<BackgroundSlider images={data} duration={3} transition={2} />:<></>}
         </div>
       </div>
     </div>

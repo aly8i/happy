@@ -1,9 +1,11 @@
 import styles from "../../../styles/Order.module.css";
 import Image from "next/image";
 import axios from "axios";
-import { useEffect,useState } from "react";
+import { useEffect,useState,useRef } from "react";
+import ReactToPrint from 'react-to-print'
 const Order = ({ order }) => {
   const [status,setStatus] = useState(order.status);
+  const printRef = useRef();
   const statusClass = (index) => {
     if (index - status < 1) return styles.done;
     if (index - status === 1) return styles.inProgress;
@@ -14,6 +16,7 @@ const Order = ({ order }) => {
   },[order])
   return (
 <div className={styles.container}>
+  <div className={styles.print} ref={printRef}>
       <div className={styles.up}>
       <div className={styles.row}>
           <div className={styles.item}>
@@ -31,6 +34,10 @@ const Order = ({ order }) => {
           <div className={styles.item}>
             <h5 className={styles.header}>Total</h5>
             <span className={styles.total}><b>${order.total}</b></span>
+          </div>
+          <div className={styles.item}>
+            <h5 className={styles.header}>Delivery Charge</h5>
+            <span className={styles.total}><b>${order.deliveryCharge}</b></span>
           </div>
           <div className={styles.item}>
             <h5 className={styles.header}>Address</h5>
@@ -71,10 +78,9 @@ const Order = ({ order }) => {
                     <div className={`${styles.tsmall} ${styles.red}`}>{p.amount*p.price}</div>
                   </div>
                 )
-            
             ))}
         </div>
-        
+        </div>
         <div className={styles.down}>
         <div className={styles.row}>
           <div className={statusClass(0)}>
@@ -118,6 +124,10 @@ const Order = ({ order }) => {
           </div>
           </div>
         </div>
+        <ReactToPrint
+        trigger={() => <button className={styles.printBtn}>Print this out!</button>}
+        content={() => printRef.current}
+      />
       </div>
   );
 };

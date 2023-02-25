@@ -8,13 +8,11 @@ import SwiperCore, { Autoplay } from 'swiper/core';
 import {useState,useEffect} from 'react'
 import axios from "axios";
 const Featured = () => {
-  const [data,setData]=useState([
-    "/img/featured.png"
-  ]);
+  const [data,setData]=useState([]);
   useEffect(()=>{
     try{
     axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/static/`).then((res)=>{
-      setData(res.data.slider1);
+      setData(res.data?.slider1);
     });
     }catch(err){
       console.log(err);
@@ -32,7 +30,7 @@ const Featured = () => {
         }}
       pagination={{ clickable: true }}>
       {
-        data.map((image,id) => {
+        data?.map((image,id) => {
           return (
             <SwiperSlide key={id} className={styles.wrapper}>
               <div className={styles.imgContainer}>

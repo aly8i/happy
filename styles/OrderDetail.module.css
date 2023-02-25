@@ -44,7 +44,7 @@
 }
 .button {
   border: none;
-  background-color: var(--first-color-s);;
+  background-color: var(--first-color-s);
   color: var(--second-color);
   margin-top: 6%;
   margin-bottom: 6%;

@@ -1,6 +1,8 @@
-import { SkipNext } from "@mui/icons-material";
 import { createSlice } from "@reduxjs/toolkit";
 
+const round = (val) =>{
+  return parseFloat((val).toFixed(2))
+}
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -36,10 +38,10 @@ const cartSlice = createSlice({
         }
       }
       state.products.push(action.payload);
-      state.quantity += 1* action.payload.quantity;
+      state.quantity += round(1* action.payload.quantity);
       state.size = action.payload.size;
-      state.price = action.payload.price;
-      state.total += action.payload.price * action.payload.quantity;
+      state.price = round(action.payload.price);
+      state.total += round(action.payload.price * action.payload.quantity);
       state.stage = 1;
     },
     incrementProduct: (state, action) => {
@@ -55,10 +57,10 @@ const cartSlice = createSlice({
               }
             }
             if(booll==true){
-              const newproduct =  {...state.products[i],quantity:state.products[i].quantity+1};
+              const newproduct =  {...state.products[i],quantity:round(state.products[i].quantity+1)};
               state.products[i] = newproduct;
-              state.quantity=state.quantity+1;
-              state.total+=action.payload.price;
+              state.quantity=round(state.quantity+1);
+              state.total+=round(action.payload.price);
               state.stage = 1
               return;
             }else{
@@ -87,7 +89,7 @@ const cartSlice = createSlice({
             }
             if(booll==true){
               if (state.products[i].quantity!=1){
-                const newproduct =  {...state.products[i],quantity:state.products[i].quantity-1};
+                const newproduct =  {...state.products[i],quantity:round(state.products[i].quantity-1)};
                 newarray.push(newproduct);
               }
             }else{
@@ -104,8 +106,8 @@ const cartSlice = createSlice({
         }
       }
       state.products = newarray;
-      state.quantity -= 1;
-      state.total -= action.payload.price;
+      state.quantity -= round(1);
+      state.total -= round(action.payload.price);
       state.stage = 1
     },
     removeProduct: (state, action) => {
@@ -132,8 +134,8 @@ const cartSlice = createSlice({
         }
       }
       state.products = newarray;
-      state.quantity -= 1* action.payload.quantity;
-      state.total -= action.payload.price * action.payload.quantity;
+      state.quantity -= round(1* action.payload.quantity);
+      state.total -= round(action.payload.price * action.payload.quantity);
       state.stage = 1
     },
     resetCart: (state) => {

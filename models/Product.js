@@ -33,6 +33,13 @@ const ProductSchema = new mongoose.Schema(
       type : String,
       required: true,
     },
+    measurment: {
+      type : String,
+      required: true,
+    },
+    priceperkg: {
+      type : Number,
+    },
   },
   { timestamps: true }
 );

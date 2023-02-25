@@ -83,10 +83,8 @@ const Navbar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.item}>
-          <PhoneIcon className={styles.phone}/>
-        <div className={styles.texts}>
-          <div className={styles.text}>ORDER NOW!</div>
-          <div className={styles.text}>03564248</div>
+        <div className={styles.imagewrapper}>
+          <Image src="/img/happylogo.png" alt=""  width={100} height={70}/>
         </div>
       </div>
       <div className={styles.item}>

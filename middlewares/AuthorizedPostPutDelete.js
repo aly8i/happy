@@ -1,4 +1,5 @@
 import { verify } from "jsonwebtoken";
+import { getCookie } from 'cookies-next';
 const AuthorizedPostPutDelete = (fn) => async (req,res) => {
   const {
     query: { id }
@@ -7,10 +8,10 @@ const AuthorizedPostPutDelete = (fn) => async (req,res) => {
   if (method === "GET"){
     return await fn(req, res)
   }else{
-    const token = req.headers.authorization;
-    console.log(token);
+    const token = getCookie('accessToken', { req, res });
     verify(token,process.env.NEXT_PUBLIC_JWT_SECRET,async function(err,decoded){
       if(!err && decoded) {
+        if(decoded.role=='admin')
         if(decoded.sub==id || decoded.role=='admin'){
           req.decoded=decoded
           return await fn(req, res)

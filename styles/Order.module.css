@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   height: 70vh;
+  overflow-y: scroll;
 }
 .middle{
   flex: 2;
@@ -19,6 +20,28 @@
   gap:0;
   border:2px solid var(--second-color);
 }
+.printBtn{
+  background-color: var(--first-color);
+  width: 150px;
+  color: white;
+  align-self: flex-end;
+  border: none;
+  height: 50px;
+  margin: 10px 0px;
+  border-radius: 7px;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.7s;
+}
+.printBtn:hover{
+  scale: 1.1;
+}
+.printBtn:active{
+  scale: 0.9;
+}
+.print{
+  display: flex;
+  flex-direction: column;
+  flex: 4;
+}
 .tsmall{
   width:10%;
   text-align: center;
@@ -26,12 +49,12 @@
   border:2px solid var(--second-color);
 }
 .red{
-  background-color: red;
+  background-color: var(--first-color);
   color: var(--second-color);
 }
 .white{
   background-color: var(--second-color);
-  color: var(--first-color-s);
+  color: var(--first-color);
 }
 .up {
   flex: 2;
@@ -45,7 +68,6 @@
   margin-right:200px;
 }
 .row{
-  /* margin: 10px 10px 10px 10px; */
   display: flex;
   padding: 0px;
   justify-content: space-between;
@@ -159,12 +181,12 @@
     border:2px solid var(--second-color);
   }
   .red{
-    background-color: red;
+    background-color: var(--first-color);
     color: var(--second-color);
   }
   .white{
     background-color: var(--second-color);
-    color: red;
+    color: var(--first-color);
   }
   .up {
     flex: 2;
@@ -189,9 +211,6 @@
     margin-right:20px;
   }
   .row{
-    /* margin: 10px 10px 10px 10px; */
-    /* display: flex;
-    */
     flex-wrap: wrap;
     padding: 0px;
     justify-content: space-between;

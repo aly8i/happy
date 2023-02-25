@@ -1,6 +1,6 @@
 import styles from "../../styles/adminFeatured.module.scss";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
@@ -83,11 +83,11 @@ const Featured = ({orders}) => {
         <div className={styles.featuredChart}>
           <CircularProgressbar styles={{
     path: {
-      stroke: '#FF0000',
+      stroke: `${process.env.NEXT_PUBLIC_FIRST_COLOR_S}`,
     },
     text: {
       // Text color
-      fill: '#FF0000',
+      fill: `${process.env.NEXT_PUBLIC_FIRST_COLOR}`,
       // Text size
       fontSize: '20px',
     },

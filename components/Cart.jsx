@@ -19,15 +19,17 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {sign,verify} from 'jsonwebtoken';
 import { setCookie,getCookie,deleteCookie } from "cookies-next";
 import { useEffect } from "react";
-
-const Cart=()=> {
+const round = (val) =>{
+  return parseFloat((val).toFixed(2))
+}
+const Cart=({mapLocation,deliveryChargePerKm})=> {
   const cart = useSelector((state) => state.cart);
   const [open, setOpen] = useState(false);
   const [cash, setCash] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const [error,setError]=useState(null);
-  const [savee,setSavee] = useState(<>hi</>);
+  const [savee,setSavee] = useState(<></>);
   useEffect(()=>{
     if(cart.stage==1){
       setSavee(<motion.div className={styles.button} whileTap={{ scale: 0.8}} whileHover={{ scale: 1.1}} onClick={() => save()} >SAVE FOR LATER</motion.div>);
@@ -47,6 +49,7 @@ const Cart=()=> {
     }
   }
   },[])
+  
 
   const createOrder = async (data) => {
     const jwt = sign(data,process.env.NEXT_PUBLIC_JWT_SECRET,{expiresIn: '30s'});
@@ -100,7 +103,7 @@ const Cart=()=> {
               <div className={styles.emptyWrapper}>
                 <div className={styles.chat}>
                   <ChatBubbleIcon className={styles.bubbleIcon}/>
-                  <p className={styles.message}>I&apos;mempty</p>
+                  <p className={styles.message}>I&apos;m empty</p>
                 </div>
                 <ShoppingCartIcon className={styles.cartIcon}/>
                 <Link href="/" passHref>
@@ -144,11 +147,11 @@ const Cart=()=> {
                   <span className={styles.name}>{product.title}</span>
                 </td>
                 <td>
-                  <span className={styles.size}>{product.size}</span>
+                  <span className={styles.size}>{product.size||"---"}</span>
                 </td>
                 <td>
                   <span className={styles.extras}>
-                    {product.extras.map((extra,i) => (
+                    {product.extras.length==0?"---":product.extras.map((extra,i) => (
                       <span className={styles.extra} key={extra._id}>{product.extras.length==i+1?`${extra.text}`:`${extra.text}, `}</span>
                     ))}
                   </span>
@@ -161,16 +164,18 @@ const Cart=()=> {
                 </td>
                 <td>
                   <span className={styles.total}>
-                    ${product.price * product.quantity}
+                    ${round(product.price * product.quantity)}
                   </span>
                 </td>
                 <td className={styles.td}>
-                  <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} onClick={()=>decProduct(product)}>
+                  {product.size=="NAN"?<></>:
+                  <><motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} onClick={()=>decProduct(product)}>
                     <RemoveCircleIcon className={styles.subQ}/>
                   </motion.div>
                   <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} className={styles.addQ} onClick={()=>incProduct(product)}> 
                     <AddCircleIcon/>
-                  </motion.div>
+                  </motion.div></>}
+
                   <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1}} className={styles.xQ} onClick={()=>remProduct(product)}> 
                     <CancelIcon/> 
                   </motion.div>
@@ -183,12 +188,12 @@ const Cart=()=> {
       <div className={styles.right}>
         <div className={styles.wrapper}>
           <h2 className={styles.title}>CART TOTAL</h2>
-          <div className={styles.totalText}>
+          {/* <div className={styles.totalText}>
             <b className={styles.totalTextTitle}>Subtotal:</b>${cart.total}
-          </div>
-          <div className={styles.totalText}>
+          </div> */}
+          {/* <div className={styles.totalText}>
             <b className={styles.totalTextTitle}>Discount:</b>$0.00
-          </div>
+          </div> */}
           <div className={styles.totalText}>
             <b className={styles.totalTextTitle}>Total:</b>${cart.total}
           </div>
@@ -210,7 +215,7 @@ const Cart=()=> {
           )}
         </div>
       </div>
-      {cash && <OrderDetail createOrder={createOrder} />}
+      {cash && <OrderDetail createOrder={createOrder} mapLocation={mapLocation} deliveryChargePerKm={deliveryChargePerKm} />}
     </div>
     {error&&<Alert onClose={() => {setError(null)}} severity="error">
         {error}

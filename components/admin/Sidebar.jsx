@@ -7,10 +7,11 @@ import StoreIcon from "@mui/icons-material/Store";
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+// import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import Link from "next/link";
 const Sidebar = () => {
   return (
@@ -53,17 +54,19 @@ const Sidebar = () => {
               <span>Delivery</span>
             </li>
           </Link>
-          <p className={styles.title}>USEFUL</p>
+          <p className={styles.title}>USEFULL</p>
           <Link href="/admin/statics" passHref>
           <li>
             <InsertChartIcon className={styles.icon} />
             <span>Statics</span>
           </li>
           </Link>
-          <li>
-            <NotificationsNoneIcon className={styles.icon} />
-            <span>Notifications</span>
-          </li>
+          <Link href="/admin/messages" passHref>
+            <li>
+              <QuestionAnswerIcon className={styles.icon} />
+              <span>Messages</span>
+            </li>
+          </Link>
           <p className={styles.title}>SERVICE</p>
           <li>
             <SettingsSystemDaydreamOutlinedIcon className={styles.icon} />

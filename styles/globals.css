@@ -1,6 +1,6 @@
 :root {
-  --first-color: #d1411e;
-  --first-color-s: red;
+  --first-color: #75219D;
+  --first-color-s: #FFD301;
   --second-color:white;
   --third-color: grey;
   --third-color-s: lightgrey;
@@ -8,6 +8,7 @@
 
 html,
 body {
+  overflow-x: scroll;
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   -ms-user-select: none;
@@ -27,8 +28,6 @@ a{
   text-decoration: none !important;
   text-decoration-line: none !important;
 }
-
-
 :link{
   color: inherit;
   text-decoration: none !important;

@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const StaticSchema = new mongoose.Schema(
   {
+    company:{
+      type:String,
+      default:"happy",
+    },
     name: {
       type: String,
     //   required: true,
@@ -60,7 +64,19 @@ const StaticSchema = new mongoose.Schema(
     linkedin:{
       type : String,
       // required: true,
-  },
+    },
+    mapLocation:{
+      type : {
+        lat:{type:Number,required:true},
+        lng:{type:Number,required:true},
+      },
+      // required: true,
+    },
+    deliveryChargePerKm:{
+      type : Number,
+      required:true,
+      default:0.1
+    }
   },
   { timestamps: true }
 );

@@ -2,8 +2,10 @@ import axios from "axios";
 import { useEffect,useState } from "react";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import Bottom from'./Bottom';
+import Bottom from './Bottom';
+import MainSearch from './MainSearch';
 import MobileNavMenu from "./MobileNavMenu";
+import Chat from "./Chat";
 const Layout = ({ children}) => {
   const [statics,setStatics] = useState({});
   useEffect(()=>{
@@ -20,6 +22,8 @@ const Layout = ({ children}) => {
       <Navbar />
       {children}
       <MobileNavMenu/>
+      <Chat/>
+      <MainSearch/>
       <Footer statics={statics}/>
       <Bottom/>
     </>

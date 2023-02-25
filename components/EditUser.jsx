@@ -20,7 +20,6 @@ const EditUser = ({user,token,type}) => {
     const [role,setRole]= useState(user.role);
     const [loading,setLoading] = useState (false);
     const router = useRouter();
-    
     const postUser = async (pay) => {
       var res1 = {}
       const server = axios.create({
@@ -44,14 +43,12 @@ const EditUser = ({user,token,type}) => {
         const res11 = await server.put(`api/users/${user._id}/`, pay);
         res1=res11;
     }catch(err){
-      if(err&&err.response?.status>=300){
         return {
           redirect: {
             permanent: false,
             destination: "/"
           },
         };
-      }
     }
         return res1;
     }
@@ -205,10 +202,8 @@ const EditUser = ({user,token,type}) => {
                 </div>
               )}
               <div className={styles.formInput}>
-                <button onClick={handleSave}>Save</button>
-                {loading?(<Progress className={styles.progress}/>):null}
+                {loading?(<Progress className={styles.progress}/>):<button onClick={handleSave}>Save</button>}
               </div>
-              
             </div>
           </div>
         </div>

@@ -39,7 +39,7 @@ const UserDatatable = ({users,token}) => {
   const requestSearch = (searchedVal) => {
     if(searchedVal!=""){
       const filteredRows = rows.filter((row) => {
-        return row.username.toLowerCase().includes(searchedVal.toLowerCase());
+        return row.username?.toLowerCase().includes(searchedVal.toLowerCase())||row._id.includes(searchedVal.toLowerCase())||row.phonenumber?.includes(searchedVal.toLowerCase());
       });
       setRows(filteredRows);
     }else{
@@ -83,9 +83,6 @@ const UserDatatable = ({users,token}) => {
           <div className={styles.search}>
             <Search setSearched={setSearched} searched={searched}/>
           </div>
-          <Link href="/admin/users/new" passHref >
-            <span className={styles.link}>Add New</span>
-          </Link>
         </div>
         <DataGrid
           className={styles.datagrid}

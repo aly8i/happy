@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 const Chart = ({ aspect, title, orders, type }) => {
-  const color1 = "#FF0000"
+  const color1 = `${process.env.NEXT_PUBLIC_FIRST_COLOR}`
   const getTotalByDate = (m,y) =>{
     var month = m;
     var year = y;
@@ -77,7 +77,7 @@ const Chart = ({ aspect, title, orders, type }) => {
       return 'october';
     else if(m==11)
       return 'november';
-    else if(m==12)
+    else if(m==12||m==0)
       return 'december';
   }
   const totalChartData = () =>{
@@ -118,7 +118,7 @@ const Chart = ({ aspect, title, orders, type }) => {
               <stop offset="95%" stopColor={color1} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="month" stroke="gray" />
+          <XAxis dataKey="month" stroke={color1} />
           <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
           <Tooltip />
           <Area
