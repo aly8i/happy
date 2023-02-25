@@ -168,7 +168,7 @@ const MessageBox = () => {
                                         if (message.status == "sent") {
                                             return (
                                                 <div key={i} className={styles.sent} >
-                                                    {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
+                                                    {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" rel="noreferrer"  className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
                                                     <div className={styles.time}>{message.time}</div>
                                                     <div className={styles.sentAnchor} />
                                                 </div>
@@ -176,7 +176,7 @@ const MessageBox = () => {
                                         } else {
                                             return (
                                                 <div key={i} className={styles.recieved} >
-                                                     {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
+                                                     {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" rel="noreferrer"  className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
                                                     <div className={styles.time}>{message.time}</div>
                                                     <div className={styles.recievedAnchor} />
                                                 </div>

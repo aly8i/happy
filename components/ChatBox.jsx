@@ -96,7 +96,7 @@ const ChatBox = () => {
                         if(message.status=="sent"){
                                 return(
                                     <div className={styles.sent} key={i}>
-                                        {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
+                                        {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" rel="noreferrer"  className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
                                         <div className={styles.time}>{message.time}</div>
                                         <div className={styles.sentAnchor}/>
                                     </div>
@@ -104,7 +104,7 @@ const ChatBox = () => {
                         }else{
                             return(
                                 <div className={styles.recieved} key={i} >
-                                    {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
+                                    {message.message.includes("http://")||message.message.includes("https://")?<a href={message.message} target="_blank" rel="noreferrer" className={styles.message}><b>{message.message}</b></a>:<div className={styles.message}>{message.message}</div>}
                                     <div className={styles.time}>{message.time}</div>
                                     <div className={styles.recievedAnchor}/>
                                 </div>
