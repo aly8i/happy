@@ -2,7 +2,7 @@ import styles from "../../styles/adminSingle.module.scss";
 import Chart from "../../components/chart/Chart";
 import List from "../../components/table/Table";
 import Link from "next/link";
-
+//singleee
 const Single = ({user,orders,type}) => {
   return (
     <div className={styles.single}>
